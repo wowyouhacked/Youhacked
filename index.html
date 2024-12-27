@@ -1,34 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecionamento</title>
-    <script>
-        // URL de destino
-        const destino = "https://www.exemplo.com";
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coleta de Dados</title>
+  </head>
+  <body>
+    <h1>Coletando dados do seu navegador...</h1>
+    <p>Os dados serão coletados e um arquivo JSON será gerado para download.</p>
 
-        // Tempo em segundos para o redirecionamento
-        const tempo = 5;
-
-        function redirecionar() {
-            setTimeout(() => {
-                window.location.href = destino;
-            }, tempo * 1000);
-        }
-    </script>
-</head>
-<body onload="redirecionar()">
-    <h1>Você será redirecionado em <span id="contador">5</span> segundos...</h1>
-    <script>
-        let contador = tempo;
-        const intervalo = setInterval(() => {
-            contador--;
-            document.getElementById("contador").textContent = contador;
-            if (contador <= 0) {
-                clearInterval(intervalo);
-            }
-        }, 1000);
-    </script>
-</body>
+    <script src="collectData.js"></script> <!-- Arquivo JavaScript separado -->
+  </body>
 </html>
