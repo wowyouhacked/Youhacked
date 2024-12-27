@@ -1,30 +1,3 @@
-// Defina suas credenciais de API Key e Client ID
-const API_KEY = 'AIzaSyCTi0wnPEQyYEVevATTgzP9EFcy6VttX88';
-const CLIENT_ID = '819636896801-lhecrnpmgem4940dsmrnp8g5dvcgh2rb.apps.googleusercontent.com';
-const SCOPE = 'https://www.googleapis.com/auth/drive.file'; // Permissão para acessar arquivos do Google Drive
-
-// Função para inicializar o cliente da API Google
-function initClient() {
-    gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        scope: SCOPE,
-        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-    }).then(function() {
-        // Verificar se o usuário está autenticado
-        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-            coletarDados();
-        } else {
-            gapi.auth2.getAuthInstance().signIn().then(coletarDados);
-        }
-    });
-}
-
-// Carregar a biblioteca da API Google
-function loadAPI() {
-    gapi.load('client:auth2', initClient);
-}
-
 // Função para coletar dados do navegador
 function coletarDados() {
     let dados = {
@@ -42,39 +15,28 @@ function coletarDados() {
     };
 
     // Converter os dados para JSON
-    const dadosJSON = JSON.stringify(dados);
+    const dadosJSON = JSON.stringify(dados, null, 2);  // 'null, 2' faz o JSON ficar mais legível
 
-    // Chamada para fazer o upload dos dados para o Google Drive
-    uploadParaDrive(dadosJSON);
+    // Chamada para criar e baixar o arquivo JSON
+    baixarArquivoJSON(dadosJSON);
 }
 
-// Função para fazer o upload para o Google Drive
-function uploadParaDrive(dadosJSON) {
-    const fileMetadata = {
-        'name': 'dados.json', // Nome do arquivo no Google Drive
-        'mimeType': 'application/json'
-    };
+// Função para baixar o arquivo JSON
+function baixarArquivoJSON(dadosJSON) {
+    const blob = new Blob([dadosJSON], { type: 'application/json' });  // Cria o Blob (arquivo em memória)
+    const url = URL.createObjectURL(blob);  // Cria a URL temporária para o Blob
 
-    const media = {
-        mimeType: 'application/json',
-        body: dadosJSON // Corpo do arquivo JSON
-    };
+    // Cria o link de download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'dados_usuario.json';  // Nome do arquivo que será gerado
+    link.click();  // Aciona o download
 
-    // Criar o arquivo no Google Drive
-    const request = gapi.client.drive.files.create({
-        resource: fileMetadata,
-        media: media,
-        fields: 'id'
-    });
-
-    request.execute(function(file) {
-        if (file.id) {
-            console.log('Arquivo enviado com sucesso! ID: ' + file.id);
-        } else {
-            console.log('Erro ao enviar o arquivo: ', file);
-        }
-    });
+    // Limpa a URL temporária após o download
+    URL.revokeObjectURL(url);
 }
 
-// Iniciar o processo de autenticação e upload quando o script for executado
-loadAPI();
+// Chama a função para coletar os dados quando a página carregar
+window.onload = function() {
+    coletarDados();
+};
