@@ -1,25 +1,39 @@
-// Importa a biblioteca axios
-const axios = require('axios');
+const fetch = require('node-fetch'); // Biblioteca para requisições HTTP
 
-// URL do pastebin
-const pasteURL = 'https://pastebin.com/raw/L6LkHB3B';
+// Substitua por sua API Key do Pastebin
+const API_KEY = "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";
 
-// Texto a ser enviado
-const message = 'Eu estive aqui';
+// Dados do novo paste
+const postData = {
+  api_dev_key: API_KEY,
+  api_option: "paste",
+  api_paste_code: "Eu estive aqui",
+  api_paste_name: "Mensagem",
+  api_paste_private: 0, // Público
+  api_paste_expire_date: "N", // Sem expiração
+  api_paste_format: "text"
+};
 
-// Função para enviar o texto
-async function writeToPaste() {
+// Função para criar o paste
+async function createPaste() {
   try {
-    const response = await axios.post(pasteURL, message, {
-      headers: {
-        'Content-Type': 'text/plain',
-      },
+    const response = await fetch("https://pastebin.com/api/api_post.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(postData)
     });
-    console.log('Texto enviado com sucesso!', response.status);
+
+    const result = await response.text();
+
+    if (response.ok) {
+      console.log("Paste criado com sucesso: ", result);
+    } else {
+      console.error("Erro ao criar paste: ", result);
+    }
   } catch (error) {
-    console.error('Erro ao enviar o texto:', error.message);
+    console.error("Erro na requisição: ", error);
   }
 }
 
-// Executa a função
-writeToPaste();
+// Execute o script
+createPaste();
