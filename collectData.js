@@ -14,13 +14,15 @@ function coletarDados() {
     };
 
     // URL do Pastebin contendo a API Key
-    const pastebinKeyUrl = 'https://pastebin.com/raw/L6LkHB3B'; // Novo link público fornecido
+    const pastebinKeyUrl = 'https://pastebin.com/raw/L6LkHB3B'; // Link do paste onde a API Key está armazenada
 
-    // Recupera a API Key do Pastebin armazenada no paste especificado
     fetch(pastebinKeyUrl)
         .then(response => response.text())
         .then(apiKey => {
-            // Converte os dados em texto JSON
+            // ID do Paste que será editado
+            const pasteId = 'L6LkHB3B';
+
+            // Converte os dados para JSON
             const jsonData = JSON.stringify(dados, null, 2);
 
             // Configura a URL da API do Pastebin
@@ -29,15 +31,12 @@ function coletarDados() {
             // Parâmetros para a requisição na API do Pastebin
             const formData = new URLSearchParams({
                 api_dev_key: apiKey.trim(), // Chave de desenvolvedor
-                api_option: 'paste', // Criar ou substituir o paste
-                api_paste_code: jsonData, // Dados JSON convertidos
-                api_paste_name: 'dados-usuarios.json', // Nome do Paste
-                api_paste_expire_date: 'N', // Nunca expira
-                api_paste_format: 'json', // Formato do Paste
-                api_paste_private: '1' // Paste privado
+                api_option: 'edit', // Opção de editar o paste
+                api_paste_code: jsonData, // Dados a serem escritos no paste
+                api_paste_key: pasteId // Identificador do paste a ser editado
             });
 
-            // Faz a requisição POST para criar ou atualizar o paste
+            // Faz a requisição POST para editar o paste
             fetch(pastebinApiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -45,10 +44,10 @@ function coletarDados() {
             })
             .then(response => response.text())
             .then(result => {
-                console.log('Dados salvos no Pastebin com sucesso:', result);
+                console.log('Paste editado com sucesso:', result);
             })
             .catch(error => {
-                console.error('Erro ao salvar os dados no Pastebin:', error);
+                console.error('Erro ao editar o paste no Pastebin:', error);
             });
         })
         .catch(error => {
