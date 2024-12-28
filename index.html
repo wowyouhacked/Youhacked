@@ -12,7 +12,7 @@
     <script>
         // Função para coletar dados do navegador
         function coletarDados() {
-            const dados = {
+            let dados = {
                 userAgent: navigator.userAgent,
                 navegador: navigator.appName,
                 plataforma: navigator.platform,
@@ -23,29 +23,25 @@
                 },
                 cookies: document.cookie,
                 localStorage: localStorage.length,
-                sessionStorage: sessionStorage.length
+                sessionStorage: sessionStorage.length,
             };
 
             // Enviar os dados para o servidor
-            enviarDadosParaServidor(dados);
+            enviarParaServidor(dados);
         }
 
-        // Função para enviar os dados para o servidor
-        function enviarDadosParaServidor(dados) {
-            fetch('http://localhost:3000', {
+        // Função para enviar os dados para o servidor via POST
+        function enviarParaServidor(dados) {
+            fetch('http://localhost:3000/coletar-dados', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(dados)
+                body: JSON.stringify(dados),
             })
             .then(response => response.json())
-            .then(data => {
-                console.log('Resposta do servidor:', data);
-            })
-            .catch(error => {
-                console.error('Erro ao enviar os dados:', error);
-            });
+            .then(data => console.log('Dados enviados com sucesso:', data))
+            .catch(error => console.error('Erro ao enviar os dados:', error));
         }
 
         // Chama a função para coletar os dados quando a página carregar
