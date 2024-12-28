@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Coletando dados do seu navegador...</h1>
-    <p>Os dados serão coletados e enviados para o servidor.</p>
+    <p>Os dados serão coletados e enviados ao servidor.</p>
 
     <script>
         // Função para coletar dados do navegador
@@ -26,29 +26,24 @@
                 sessionStorage: sessionStorage.length
             };
 
-            // Enviar os dados para o servidor Node.js
-            enviarDadosParaServidor(dados);
-        }
-
-        // Função para enviar os dados coletados para o servidor
-        function enviarDadosParaServidor(dados) {
-            fetch('http://localhost:3000/coletar-dados', {
+            // Enviar os dados para o servidor via POST
+            fetch('http://localhost:3000', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(dados)  // Envia os dados como JSON
+                body: JSON.stringify(dados)  // Converte os dados para JSON
             })
-            .then(response => response.json())
+            .then(response => response.text())
             .then(data => {
-                console.log('Dados enviados com sucesso:', data);
+                console.log('Resposta do servidor:', data);
             })
             .catch(error => {
-                console.error('Erro ao enviar dados:', error);
+                console.error('Erro ao enviar os dados:', error);
             });
         }
 
-        // Chama a função para coletar e enviar os dados quando a página carregar
+        // Chama a função para coletar os dados quando a página carregar
         window.onload = function() {
             coletarDados();
         };
