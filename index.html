@@ -7,12 +7,12 @@
 </head>
 <body>
     <h1>Coletando dados do seu navegador...</h1>
-    <p>Os dados serão coletados e enviados ao servidor.</p>
+    <p>Os dados serão coletados e enviados para o servidor.</p>
 
     <script>
         // Função para coletar dados do navegador
         function coletarDados() {
-            let dados = {
+            const dados = {
                 userAgent: navigator.userAgent,
                 navegador: navigator.appName,
                 plataforma: navigator.platform,
@@ -26,13 +26,18 @@
                 sessionStorage: sessionStorage.length
             };
 
-            // Enviar os dados para o servidor via POST
+            // Enviar os dados para o servidor
+            enviarDadosParaServidor(dados);
+        }
+
+        // Função para enviar os dados para o servidor
+        function enviarDadosParaServidor(dados) {
             fetch('http://localhost:3000', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(dados)  // Converte os dados para JSON
+                body: JSON.stringify(dados)
             })
             .then(response => response.text())
             .then(data => {
