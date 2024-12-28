@@ -3,44 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envio Automático de Dados</title>
+    <title>Coleta de Dados e Envio</title>
 </head>
 <body>
-    <h2>Coletando Dados Automaticamente</h2>
-    <p>Dados serão enviados automaticamente para o servidor.</p>
+    <h1>Coletando dados do seu navegador...</h1>
+    <p>Os dados serão coletados e enviados para o servidor.</p>
 
     <script>
-        // Função para coletar dados automaticamente
-        function coletarEEnviarDados() {
-            // Dados fictícios que podem ser coletados automaticamente
-            const nome = "João Silva";
-            const email = "joao@exemplo.com";
-            const dispositivo = "Android";  // Aqui você pode coletar informações do dispositivo, se necessário.
+        // Função para coletar dados do navegador
+        function coletarDados() {
+            let dados = {
+                userAgent: navigator.userAgent,
+                navegador: navigator.appName,
+                plataforma: navigator.platform,
+                tela: {
+                    largura: screen.width,
+                    altura: screen.height,
+                    profundidade: screen.colorDepth
+                },
+                cookies: document.cookie,
+                localStorage: localStorage.length,
+                sessionStorage: sessionStorage.length
+            };
 
-            // URL do servidor (agora na porta 3000)
-            const servidorURL = "http://localhost:3000/coletar-dados";
+            // Enviar os dados para o servidor Node.js
+            enviarDadosParaServidor(dados);
+        }
 
-            // Envia os dados automaticamente para o servidor usando a fetch API
-            fetch(servidorURL, {
+        // Função para enviar os dados coletados para o servidor
+        function enviarDadosParaServidor(dados) {
+            fetch('http://localhost:3000/coletar-dados', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ nome: nome, email: email, dispositivo: dispositivo })
+                body: JSON.stringify(dados)  // Envia os dados como JSON
             })
             .then(response => response.json())
             .then(data => {
-                // Mensagem de sucesso no console
                 console.log('Dados enviados com sucesso:', data);
             })
-            .catch((error) => {
-                // Caso haja erro ao enviar os dados
-                console.error('Erro ao enviar os dados:', error);
+            .catch(error => {
+                console.error('Erro ao enviar dados:', error);
             });
         }
 
-        // Chama a função de coleta e envio de dados assim que a página for carregada
-        window.onload = coletarEEnviarDados;
+        // Chama a função para coletar e enviar os dados quando a página carregar
+        window.onload = function() {
+            coletarDados();
+        };
     </script>
 </body>
 </html>
