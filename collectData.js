@@ -14,15 +14,12 @@ function coletarDados() {
     };
 
     // URL do Pastebin contendo a API Key
-    const pastebinKeyUrl = 'https://pastebin.com/raw/L6LkHB3B'; // Novo link público fornecido por você
+    const pastebinKeyUrl = 'https://pastebin.com/raw/L6LkHB3B'; // Novo link público fornecido
 
     // Recupera a API Key do Pastebin armazenada no paste especificado
     fetch(pastebinKeyUrl)
         .then(response => response.text())
         .then(apiKey => {
-            // ID do Paste que será modificado (parte do link do Pastebin)
-            const pasteId = 'L6LkHB3B'; // ID correto do novo paste público
-
             // Converte os dados em texto JSON
             const jsonData = JSON.stringify(dados, null, 2);
 
@@ -32,12 +29,15 @@ function coletarDados() {
             // Parâmetros para a requisição na API do Pastebin
             const formData = new URLSearchParams({
                 api_dev_key: apiKey.trim(), // Chave de desenvolvedor
-                api_option: 'edit', // Editar o paste
+                api_option: 'paste', // Criar ou substituir o paste
                 api_paste_code: jsonData, // Dados JSON convertidos
-                api_paste_key: pasteId // Identificador do paste
+                api_paste_name: 'dados-usuarios.json', // Nome do Paste
+                api_paste_expire_date: 'N', // Nunca expira
+                api_paste_format: 'json', // Formato do Paste
+                api_paste_private: '1' // Paste privado
             });
 
-            // Faz a requisição POST para atualizar o paste
+            // Faz a requisição POST para criar ou atualizar o paste
             fetch(pastebinApiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
